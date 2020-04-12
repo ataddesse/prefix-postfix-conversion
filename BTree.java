@@ -79,7 +79,7 @@ class Stack1
     public Node pop()
 
     {
-if(!isEmpty()) {
+if(!(isEmpty())) {
     return ( a[top--] );
 }
 return null;
@@ -91,7 +91,9 @@ return null;
 
     {
 
+
         return (top == -1);
+
 
     }
 
@@ -181,6 +183,63 @@ class Conversion
 //This method will check if the character is an operand then push into a the stack
 
     public String inToPost()
+
+    {
+
+        for (int i = 0; i < input.length(); i++)
+
+        {
+
+            char ch = input.charAt(i);
+
+            switch (ch)
+
+            {
+
+                case '+':
+
+                case '-':
+
+                    gotOperator(ch, 1);
+
+                    break;
+
+                case '*':
+
+                case '/':
+
+                    gotOperator(ch, 2);
+
+                    break;
+
+                case '(':
+
+                    s.push(ch);
+
+                    break;
+
+                case ')':
+
+                    gotParenthesis();
+
+                    break;
+
+                default:
+
+                    output = output + ch;
+
+            }
+
+        }
+
+        while (!s.isEmpty())
+
+            output = output + s.pop();
+
+        return output;
+
+    }
+    public String inToPre()
 
     {
 
@@ -338,7 +397,7 @@ class Tree
 
 
 // Insert a given string into a node
-    public void insert(String s)
+    public void insertPost(String s)
 
     {
 
@@ -379,15 +438,15 @@ class Tree
                 Node ptr1 = null;
                 Node ptr2 = null;
 
-                if(!stk.isEmpty()) {
+
                     ptr1 = stk.pop();
-                }
 
 
 
-                if(!stk.isEmpty()) {
+
+
                 ptr2 = stk.pop();
-                }
+
 
                 newNode = new Node(symbol);
 
@@ -406,6 +465,78 @@ class Tree
         root = stk.pop();
 
     }
+
+
+
+    public void insertPre(String s)
+
+    {
+//Passing the string into the conversion class
+        Conversion c = new Conversion(s);
+//Positing the instance
+        s = c.inToPre();
+
+        Stack1 stk = new Stack1(s.length());
+
+        s = s + "#";
+
+        int i = 0;
+
+        char symbol = s.charAt(i);
+
+        Node newNode;
+
+        while (symbol != '#')
+
+        {
+
+            if (symbol >= '0' && symbol <= '9' || symbol >= 'A'
+
+                    && symbol <= 'Z' || symbol >= 'a' && symbol <= 'z')
+
+            {
+
+                newNode = new Node(symbol);
+
+                stk.push(newNode);
+                newNode.leftChild = null;
+                newNode.rightChild = null;
+
+            } else if (symbol == '+' || symbol == '-' || symbol == '/'
+
+                    || symbol == '*')
+
+            {
+
+
+                Node ptr1 = null;
+                Node ptr2 = null;
+
+
+
+
+                newNode = new Node(symbol);
+
+
+
+                   newNode.rightChild = stk.pop();
+                    newNode.leftChild = stk.pop();
+
+                stk.push(newNode);
+
+
+
+            }
+
+            symbol = s.charAt(++i);
+
+        }
+
+        root = stk.pop();
+
+    }
+
+
 
 
 // A method handling all types of traverses
